@@ -36,4 +36,5 @@ jobs:
           git config user.email "bot@job-radar.local"
           git add jobs.db
           git diff --staged --quiet || git commit -m "Update job DB [skip ci]"
+          git pull --rebase origin main
           git push
