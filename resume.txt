@@ -1,0 +1,45 @@
+Sanjay S
+Python | Backend | Machine Learning | Bangalore | Immediate Joiner
++91 7892698824
+sanjaysanjay23ai@gmail.com
+linkedin.com/in/sanjays-aiengineer
+github.com/sanjay5656
+suvsan-mldev.netlify.app
+Professional Summary
+AI/ML graduate with practical experience in building and deploying complete applications, including RAG-based retrieval systems and LLM integrations, using Python, FastAPI, and Docker. I am comfortable working across the stack, from model integration to backend APIs to deployment.
+
+Technical Skills
+Languages: Python, SQL
+
+ML/DL: Supervised/Unsupervised Learning, Neural Networks, CNN, MobileNetV2, Model Evaluation & Tuning
+
+GenAI: LangChain, FAISS, RAG, Prompt Engineering
+
+Backend: FastAPI, REST APIs, SQLAlchemy, Pydantic
+
+Cloud and Deployment: Docker, AWS, Git, GitHub Actions (CI/CD), Linux, Hugging Face Spaces
+
+Libraries & Tools: TensorFlow, PyTorch, scikit-learn, OpenCV, pandas, NumPy, pytest
+
+Projects
+AI Research Assistant - Multi-document
+ | LangChain, FAISS, FastAPI, Docker, PostgreSQL, SQLAlchemy, CI/CD
+Implemented a multi-document RAG pipeline with LangChain and FAISS with incremental indexing, and added metadata tags for auto-citations at page level.
+Implemented sophisticated analysis tools, such as side-by-side comparison matrices for papers and summaries via customized LangChain PromptTemplates.
+Constructed and released a fully functional system comprising 10 FastAPI endpoints, SQL database session logging, and a continuous integration/continuous deployment pipeline using GitHub Actions executing 19 unit tests in a multi-stage Docker container.
+PCB Defect Detection System
+ | TensorFlow, MobileNetV2, OpenCV, Transfer Learning, FastAPI, Docker
+Achieved a classification accuracy improvement from 19% to 88.8% through the analysis of resolution inconsistencies on large full-board images and performing regional image-of-interest cropping through XML bounding boxes on 2,953 labeled image patches.
+Adopted two-stage transfer learning approach with MobileNetV2 model, where an independent classification layer is trained first (Adam, lr=1e-3), followed by fine tuning of the last 50 layers (Adam, lr=1e-4).
+Applied an inference API end-to-end using Hugging Face Spaces with Docker to automate OpenCV pre-processing pipeline (resizing, normalization, batching) to produce confidence levels alongside classification results.
+Education
+B.Tech - Artificial Intelligence & Machine Learning
+2022 – 2025
+Saveetha Engineering College
+Diploma - Electronics
+2019 – 2022
+Swamy Abedhanandha Polytechnic College
+Certifications
+NVIDIA - Computer Vision for Industrial Inspection
+IBM - Data Science Professional Certificate
+Java Home Cloud - Generative AI Certification
