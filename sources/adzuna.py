@@ -1,34 +1,48 @@
 import os
 import requests
 
-def fetch_adzuna_jobs(locations, max_results=50):
+SEARCH_TERMS = [
+    "python developer", "machine learning", "backend developer",
+    "software engineer fresher", "AI engineer", "data scientist",
+    "full stack developer", "software developer"
+]
+
+def fetch_adzuna_jobs(locations, max_results=20):
     app_id = os.environ["ADZUNA_APP_ID"]
     app_key = os.environ["ADZUNA_APP_KEY"]
     jobs = []
+    seen_ids = set()
+
     for loc in locations:
-        url = "https://api.adzuna.com/v1/api/jobs/in/search/1"
-        params = {
-            "app_id": app_id,
-            "app_key": app_key,
-            "what": "python developer OR machine learning OR backend developer",
-            "where": loc,
-            "results_per_page": max_results,
-            "content-type": "application/json",
-        }
-        try:
-            resp = requests.get(url, params=params, timeout=20)
-            resp.raise_for_status()
-            data = resp.json()
-            for item in data.get("results", []):
-                jobs.append({
-                    "job_id": "adzuna_" + str(item.get("id")),
-                    "title": item.get("title", ""),
-                    "company": item.get("company", {}).get("display_name", "Unknown"),
-                    "location": item.get("location", {}).get("display_name", loc),
-                    "url": item.get("redirect_url", ""),
-                    "description": item.get("description", ""),
-                    "source": "adzuna",
-                })
-        except Exception as e:
-            print(f"Adzuna fetch failed for {loc}: {e}")
+        for term in SEARCH_TERMS:
+            url = "https://api.adzuna.com/v1/api/jobs/in/search/1"
+            params = {
+                "app_id": app_id,
+                "app_key": app_key,
+                "what": term,
+                "where": loc,
+                "results_per_page": max_results,
+                "content-type": "application/json",
+            }
+            try:
+                resp = requests.get(url, params=params, timeout=20)
+                resp.raise_for_status()
+                data = resp.json()
+                print(f"Adzuna '{term}' in {loc}: {data.get('count', 0)} total matches, {len(data.get('results', []))} returned")
+                for item in data.get("results", []):
+                    job_id = str(item.get("id"))
+                    if job_id in seen_ids:
+                        continue
+                    seen_ids.add(job_id)
+                    jobs.append({
+                        "job_id": "adzuna_" + job_id,
+                        "title": item.get("title", ""),
+                        "company": item.get("company", {}).get("display_name", "Unknown"),
+                        "location": item.get("location", {}).get("display_name", loc),
+                        "url": item.get("redirect_url", ""),
+                        "description": item.get("description", ""),
+                        "source": "adzuna",
+                    })
+            except Exception as e:
+                print(f"Adzuna fetch failed for '{term}' in {loc}: {e}")
     return jobs

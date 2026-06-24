@@ -2,25 +2,39 @@ locations:
   - "Bangalore"
   - "Bengaluru"
 
-experience_min: 0
-experience_max: 2
+experience_max: 3   # be generous; let Gemini judge real fit, not a regex
 
-# keywords used in the cheap pre-filter (stage 1) before any API call
-must_have_any:
+# broad domain check — title OR description must mention at least one of these
+# this is intentionally wide; precision happens at the Gemini scoring step
+domain_keywords:
   - python
+  - java
   - fastapi
   - django
   - flask
   - machine learning
+  - deep learning
+  - data science
   - backend
-  - rest api
+  - software engineer
+  - sde
+  - developer
+  - programmer
+  - ai
+  - ml engineer
+  - full stack
+  - api
 
+# titles that should always be excluded regardless of other matches
 exclude_titles:
   - "senior"
-  - "lead"
+  - "lead "
   - "manager"
   - "principal"
+  - "director"
+  - "architect"
   - "10+ years"
+  - "8+ years"
 
 top_n_in_email: 15
-match_score_threshold: 50   # only email jobs scoring above this
+match_score_threshold: 45

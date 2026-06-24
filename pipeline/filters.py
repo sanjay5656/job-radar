@@ -1,15 +1,19 @@
 import re
 
+FRESHER_SIGNALS = ["fresher", "entry level", "entry-level", "no experience",
+                    "0 year", "graduate", "trainee", "campus"]
+
 def passes_stage1(job, config):
+    title = job["title"].lower()
     text = (job["title"] + " " + job["description"]).lower()
 
-    # exclude obviously senior/irrelevant titles
+    # hard exclude: clearly senior/irrelevant titles
     for bad in config.get("exclude_titles", []):
-        if bad.lower() in job["title"].lower():
+        if bad.lower() in title:
             return False
 
-    # must mention at least one of our target keywords
-    if not any(k.lower() in text for k in config.get("must_have_any", [])):
+    # domain check — title OR full text, broad net on purpose
+    if not any(k.lower() in text for k in config.get("domain_keywords", [])):
         return False
 
     # location check (skip for remote jobs)
@@ -18,14 +22,18 @@ def passes_stage1(job, config):
         if locations and not any(loc in job["location"].lower() for loc in locations):
             return False
 
-    # experience check via regex
-    exp_min = config.get("experience_min", 0)
+    # experience check — handle digits AND words
     exp_max = config.get("experience_max", 99)
-    match = re.search(r"(\d+)\s*[-+]?\s*(?:to)?\s*(\d+)?\s*years?", text)
-    if match:
-        lo = int(match.group(1))
-        hi = int(match.group(2)) if match.group(2) else lo
-        if lo > exp_max:
+
+    if any(sig in text for sig in FRESHER_SIGNALS):
+        return True  # explicitly fresher-friendly language, always pass
+
+    numbers = re.findall(r"(\d+)\s*\+?\s*years?", text)
+    if numbers:
+        years_mentioned = [int(n) for n in numbers]
+        min_years_required = min(years_mentioned)
+        # only exclude if EVERY mention is clearly above our ceiling
+        if min_years_required > exp_max:
             return False
 
-    return True
+    return True  # no clear experience signal at all -> let it through, Gemini will judge
