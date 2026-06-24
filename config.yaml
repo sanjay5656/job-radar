@@ -1,0 +1,26 @@
+locations:
+  - "Bangalore"
+  - "Bengaluru"
+
+experience_min: 0
+experience_max: 2
+
+# keywords used in the cheap pre-filter (stage 1) before any API call
+must_have_any:
+  - python
+  - fastapi
+  - django
+  - flask
+  - machine learning
+  - backend
+  - rest api
+
+exclude_titles:
+  - "senior"
+  - "lead"
+  - "manager"
+  - "principal"
+  - "10+ years"
+
+top_n_in_email: 15
+match_score_threshold: 50   # only email jobs scoring above this
