@@ -2,11 +2,14 @@ import os
 import requests
 
 def fetch_jooble_jobs(search_terms, location="Bangalore", max_results=20):
-    api_key = os.environ["JOOBLE_API_KEY"]
+    api_key = os.environ.get("JOOBLE_API_KEY")
+    if not api_key:
+        print("JOOBLE_API_KEY not set, skipping Jooble.")
+        return []
+
     url = f"https://jooble.org/api/{api_key}"
     jobs = []
     seen_ids = set()
-
     for term in search_terms[:8]:
         body = {"keywords": term, "location": location}
         try:
