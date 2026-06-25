@@ -4,8 +4,10 @@ from pathlib import Path
 from db.store import get_conn, job_exists, insert_job, update_score, get_unsent_scored_jobs, mark_sent
 from sources.adzuna import fetch_adzuna_jobs
 from sources.remoteok import fetch_remoteok_jobs
+from sources.jooble import fetch_jooble_jobs
 from pipeline.filters import passes_stage1
 from pipeline.scorer import score_job
+from pipeline.title_generator import generate_search_terms
 from delivery.emailer import send_digest
 
 def main():
@@ -14,7 +16,13 @@ def main():
 
     conn = get_conn()
 
-    raw_jobs = fetch_adzuna_jobs(config["locations"]) + fetch_remoteok_jobs()
+    search_terms = generate_search_terms(resume_text)
+
+    raw_jobs = (
+        fetch_adzuna_jobs(config["locations"], search_terms)
+        + fetch_remoteok_jobs()
+        + fetch_jooble_jobs(search_terms, location=config["locations"][0])
+    )
     print(f"Fetched {len(raw_jobs)} raw jobs.")
 
     new_jobs = []

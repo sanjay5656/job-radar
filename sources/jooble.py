@@ -7,7 +7,7 @@ def fetch_jooble_jobs(search_terms, location="Bangalore", max_results=20):
     jobs = []
     seen_ids = set()
 
-    for term in search_terms[:8]:  # cap to avoid overusing free quota
+    for term in search_terms[:8]:
         body = {"keywords": term, "location": location}
         try:
             resp = requests.post(url, json=body, timeout=20)

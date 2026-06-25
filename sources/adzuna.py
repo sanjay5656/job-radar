@@ -1,3 +1,6 @@
+import os
+import requests
+
 def fetch_adzuna_jobs(locations, search_terms, max_results=20):
     app_id = os.environ["ADZUNA_APP_ID"]
     app_key = os.environ["ADZUNA_APP_KEY"]
