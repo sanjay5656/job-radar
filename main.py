@@ -33,13 +33,14 @@ def main():
 
     print(f"{len(new_jobs)} new jobs after dedupe.")
 
-    candidates = [j for j in new_jobs if passes_stage1(j, config)]
+    candidates = []
+    for j in new_jobs:
+        passed, reason = passes_stage1(j, config, resume_text)
+        if passed:
+            candidates.append(j)
+        else:
+            print(f"Filtered out: {j['title']} @ {j['company']} — {reason}")
     print(f"{len(candidates)} candidates after stage-1 filter.")
-
-    for job in candidates:
-        score, reason = score_job(resume_text, job)
-        update_score(conn, job["job_id"], score, reason)
-        print(f"Scored {job['title']} @ {job['company']}: {score}%")
 
     to_send = get_unsent_scored_jobs(
         conn,
