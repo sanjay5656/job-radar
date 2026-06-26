@@ -15,7 +15,9 @@ def get_conn():
             description TEXT,
             source TEXT,
             match_score INTEGER,
-            reason TEXT,
+            match_summary TEXT,
+            ats_keywords TEXT,
+            missing_keywords TEXT,
             sent INTEGER DEFAULT 0,
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
@@ -35,14 +37,22 @@ def insert_job(conn, job):
           job["url"], job["description"], job["source"]))
     conn.commit()
 
-def update_score(conn, job_id, score, reason):
-    conn.execute("UPDATE jobs SET match_score = ?, reason = ? WHERE job_id = ?",
-                 (score, reason, job_id))
+def update_score(conn, job_id, result):
+    import json
+    conn.execute("""
+        UPDATE jobs SET match_score = ?, match_summary = ?, ats_keywords = ?, missing_keywords = ?
+        WHERE job_id = ?
+    """, (
+        result["match_score"], result["match_summary"],
+        json.dumps(result.get("ats_keywords", [])),
+        json.dumps(result.get("missing_keywords", [])),
+        job_id
+    ))
     conn.commit()
 
 def get_unsent_scored_jobs(conn, threshold, limit):
     cur = conn.execute("""
-        SELECT job_id, title, company, location, url, match_score, reason
+        SELECT job_id, title, company, location, url, match_score, match_summary, ats_keywords, missing_keywords
         FROM jobs
         WHERE sent = 0 AND match_score >= ?
         ORDER BY match_score DESC

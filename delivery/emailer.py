@@ -1,4 +1,5 @@
 import os
+import json
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -12,30 +13,29 @@ def send_digest(jobs):
     gmail_pass = os.environ["GMAIL_APP_PASSWORD"]
     to_email = os.environ.get("EMAIL_TO", gmail_user)
 
-    rows = ""
-    for job_id, title, company, location, url, score, reason in jobs:
-        rows += f"""
-        <tr>
-            <td style="padding:8px;border-bottom:1px solid #eee;">
-                <b>{title}</b><br>{company} — {location}<br>
-                <a href="{url}">View posting</a><br>
-                <span style="color:#555;font-size:13px;">{reason}</span>
-            </td>
-            <td style="padding:8px;border-bottom:1px solid #eee;text-align:center;">
-                <b>{score}%</b>
-            </td>
-        </tr>
+    blocks = ""
+    for job_id, title, company, location, url, score, summary, ats_json, missing_json in jobs:
+        ats_keywords = json.loads(ats_json) if ats_json else []
+        missing_keywords = json.loads(missing_json) if missing_json else []
+
+        ats_html = "".join(f'<span style="background:#eef;padding:3px 8px;margin:2px;border-radius:4px;font-size:12px;display:inline-block;">{k}</span>' for k in ats_keywords)
+        missing_html = "".join(f'<span style="background:#fee;padding:3px 8px;margin:2px;border-radius:4px;font-size:12px;display:inline-block;">{k}</span>' for k in missing_keywords)
+
+        blocks += f"""
+        <div style="border:1px solid #ddd;border-radius:8px;padding:14px;margin-bottom:16px;">
+            <div style="display:flex;justify-content:space-between;">
+                <b style="font-size:16px;">{title}</b>
+                <b style="font-size:16px;color:#2a7;">{score}%</b>
+            </div>
+            <div style="color:#555;font-size:13px;margin-bottom:8px;">{company} — {location}</div>
+            <div style="font-size:13px;margin-bottom:8px;">{summary}</div>
+            <div style="margin-bottom:6px;"><b style="font-size:12px;">ATS keywords:</b><br>{ats_html}</div>
+            {f'<div style="margin-bottom:6px;"><b style="font-size:12px;">Missing from resume:</b><br>{missing_html}</div>' if missing_keywords else ''}
+            <a href="{url}" style="font-size:13px;">View posting →</a>
+        </div>
         """
 
-    html = f"""
-    <html><body>
-    <h2>Your Job Radar Digest</h2>
-    <table style="width:100%;border-collapse:collapse;">
-        <tr><th>Job</th><th>Match</th></tr>
-        {rows}
-    </table>
-    </body></html>
-    """
+    html = f"<html><body><h2>Your Job Radar Digest</h2>{blocks}</body></html>"
 
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"Job Radar: {len(jobs)} new matches"
