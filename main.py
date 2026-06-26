@@ -1,6 +1,5 @@
 import yaml
 from pathlib import Path
-
 from db.store import get_conn, job_exists, insert_job, update_score, get_unsent_scored_jobs, mark_sent
 from sources.adzuna import fetch_adzuna_jobs
 from sources.remoteok import fetch_remoteok_jobs
@@ -15,11 +14,9 @@ from sources.jobicy import fetch_jobicy_jobs
 def main():
     config = yaml.safe_load(open("config.yaml"))
     resume_text = Path("resume.txt").read_text()
-
     conn = get_conn()
 
     search_terms = generate_search_terms(resume_text)
-
     raw_jobs = (
         fetch_adzuna_jobs(config["locations"], search_terms)
         + fetch_remoteok_jobs()
@@ -34,7 +31,6 @@ def main():
         if not job_exists(conn, job["job_id"]):
             insert_job(conn, job)
             new_jobs.append(job)
-
     print(f"{len(new_jobs)} new jobs after dedupe.")
 
     candidates = []
@@ -46,20 +42,21 @@ def main():
             print(f"Filtered out: {j['title']} @ {j['company']} — {reason}")
     print(f"{len(candidates)} candidates after stage-1 filter.")
 
+    # Score first
     for job in candidates:
         result = score_job(resume_text, job)
         update_score(conn, job["job_id"], result)
         print(f"Scored {job['title']} @ {job['company']}: {result['match_score']}%")
 
-    send_digest(to_send)
-    mark_sent(conn, [row[0] for row in to_send])
-
+    # Then fetch scored jobs and send
     to_send = get_unsent_scored_jobs(
         conn,
         threshold=config["match_score_threshold"],
         limit=config["top_n_in_email"]
     )
 
+    send_digest(to_send)
+    mark_sent(conn, [row[0] for row in to_send])
     conn.close()
 
 if __name__ == "__main__":
