@@ -46,16 +46,16 @@ def main():
             print(f"Filtered out: {j['title']} @ {j['company']} — {reason}")
     print(f"{len(candidates)} candidates after stage-1 filter.")
 
-    for job in candidates:
-        result = score_job(resume_text, job)
-        update_score(conn, job["job_id"], result)
-        print(f"Scored {job['title']} @ {job['company']}: {result['match_score']}%")
-
     to_send = get_unsent_scored_jobs(
         conn,
         threshold=config["match_score_threshold"],
         limit=config["top_n_in_email"]
     )
+
+    for job in candidates:
+        result = score_job(resume_text, job)
+        update_score(conn, job["job_id"], result)
+        print(f"Scored {job['title']} @ {job['company']}: {result['match_score']}%")
 
     send_digest(to_send)
     mark_sent(conn, [row[0] for row in to_send])
