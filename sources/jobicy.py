@@ -15,6 +15,7 @@ def fetch_jobicy_jobs():
                 "url": item.get("url", ""),
                 "description": item.get("jobExcerpt", "")[:3000],
                 "source": "jobicy",
+                "posted_date": item.get("created", ""),
             })
     except Exception as e:
         print(f"Jobicy fetch failed: {e}")

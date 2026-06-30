@@ -20,6 +20,7 @@ def fetch_remoteok_jobs(keywords=("python", "machine learning", "backend")):
                     "url": item.get("url", ""),
                     "description": item.get("description", "")[:3000],
                     "source": "remoteok",
+                    "posted_date": item.get("created", ""),
                 })
     except Exception as e:
         print(f"RemoteOK fetch failed: {e}")

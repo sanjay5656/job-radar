@@ -18,6 +18,7 @@ def fetch_arbeitnow_jobs():
                 "url": item.get("url", ""),
                 "description": item.get("description", "")[:3000],
                 "source": "arbeitnow",
+                "posted_date": item.get("created", ""),
             })
     except Exception as e:
         print(f"Arbeitnow fetch failed: {e}")

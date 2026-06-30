@@ -33,6 +33,7 @@ def fetch_adzuna_jobs(locations, search_terms, max_results=20):
                         "url": item.get("redirect_url", ""),
                         "description": item.get("description", ""),
                         "source": "adzuna",
+                        "posted_date": item.get("created", ""),
                     })
             except Exception as e:
                 print(f"Adzuna fetch failed for '{term}' in {loc}: {e}")

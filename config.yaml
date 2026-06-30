@@ -2,30 +2,10 @@ locations:
   - "Bangalore"
   - "Bengaluru"
 
-experience_max: 3   # be generous; let Gemini judge real fit, not a regex
+experience_max: 3
+max_posting_age_days: 14
+min_skill_overlap: 0.25
 
-# broad domain check — title OR description must mention at least one of these
-# this is intentionally wide; precision happens at the Gemini scoring step
-domain_keywords:
-  - python
-  - java
-  - fastapi
-  - django
-  - flask
-  - machine learning
-  - deep learning
-  - data science
-  - backend
-  - software engineer
-  - sde
-  - developer
-  - programmer
-  - ai
-  - ml engineer
-  - full stack
-  - api
-
-# titles that should always be excluded regardless of other matches
 exclude_titles:
   - "senior"
   - "lead "

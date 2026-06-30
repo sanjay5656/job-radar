@@ -1,4 +1,3 @@
-# migrate.py
 from db.store import get_conn
 import sqlite3
 
@@ -7,6 +6,7 @@ columns_to_add = [
     ("match_summary", "TEXT"),
     ("ats_keywords", "TEXT"),
     ("missing_keywords", "TEXT"),
+    ("posted_date", "TEXT"),
 ]
 for col, col_type in columns_to_add:
     try:

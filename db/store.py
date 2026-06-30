@@ -14,6 +14,7 @@ def get_conn():
             url TEXT,
             description TEXT,
             source TEXT,
+            posted_date TEXT,
             match_score INTEGER,
             match_summary TEXT,
             ats_keywords TEXT,
@@ -31,10 +32,10 @@ def job_exists(conn, job_id):
 
 def insert_job(conn, job):
     conn.execute("""
-        INSERT OR IGNORE INTO jobs (job_id, title, company, location, url, description, source)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT OR IGNORE INTO jobs (job_id, title, company, location, url, description, source, posted_date)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, (job["job_id"], job["title"], job["company"], job["location"],
-          job["url"], job["description"], job["source"]))
+          job["url"], job["description"], job["source"], job.get("posted_date", "")))
     conn.commit()
 
 def update_score(conn, job_id, result):

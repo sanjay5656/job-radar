@@ -107,3 +107,13 @@ def candidate_has_language(resume_text, lang_family):
     text_lower = resume_text.lower()
     signals = LANGUAGE_SIGNALS.get(lang_family, [])
     return any(sig in text_lower for sig in signals)
+
+NON_SOFTWARE_DOMAINS = [
+    "sap abap", "sap ptp", "sap fico", "sap sd", "sap mm", "s/4hana",
+    "abap engineer", "salesforce admin", "workday hcm", "mainframe",
+    "cobol", "oracle apps dba", "sap consultant", "sap functional"
+]
+
+def is_non_software_domain(text):
+    text_lower = text.lower()
+    return any(term in text_lower for term in NON_SOFTWARE_DOMAINS)

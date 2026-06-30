@@ -1,2 +1,4 @@
 requests
 pyyaml
+python-dotenv
+python-dateutil

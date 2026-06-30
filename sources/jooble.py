@@ -30,6 +30,7 @@ def fetch_jooble_jobs(search_terms, location="Bangalore", max_results=20):
                     "url": item.get("link", ""),
                     "description": item.get("snippet", ""),
                     "source": "jooble",
+                    "posted_date": item.get("created", ""),
                 })
         except Exception as e:
             print(f"Jooble fetch failed for '{term}': {e}")
